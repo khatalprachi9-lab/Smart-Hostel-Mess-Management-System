@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Hostel Mess Management System - Notices</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+    <div class="logo">
+        🏠 Smart Hostel Mess Management System
+    </div>
+    <div class="nav-buttons">
+        <a href="mess-menu.html" class="nav-btn">🍛 Mess Menu</a>
+        <a href="attendance.html" class="nav-btn">🍽️ Attendance</a>
+        <a href="mess-fees.html" class="nav-btn">💰 Mess Fees</a>
+        <a href="notice.html" class="nav-btn active">📢 Notices</a>
+        <a href="login.html" class="logout-btn">Logout</a>
+    </div>
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="notice-page">
+
+    <!-- ================= HEADING ================= -->
+
+    <div class="notice-heading">
+
+        <div class="heading-icon">
+            📢
+        </div>
+
+        <h1>Mess Notices</h1>
+
+        <p>
+            Important announcements for mess students.
+        </p>
+
+    </div>
+
+
+    <!-- ================= NOTICE LIST ================= -->
+
+    <section class="notice-container" id="noticeContainer">
+
+
+        <!-- NOTICE 1 -->
+
+        <div class="notice-card">
+
+            <div class="notice-icon">
+                🍛
+            </div>
+
+            <div class="notice-content">
+
+                <h2>Mess Timing Notice</h2>
+
+                <p class="notice-date">
+                    📅 22 August 2026
+                </p>
+
+                <p>
+                    Lunch will be served from
+                    <strong>12:00 PM to 2:00 PM.</strong>
+                    Students are requested to take their
+                    meals within the given time.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTICE 2 -->
+
+        <div class="notice-card">
+
+            <div class="notice-icon">
+                💰
+            </div>
+
+            <div class="notice-content">
+
+                <h2>Mess Fee Payment</h2>
+
+                <p class="notice-date">
+                    📅 22 August 2026
+                </p>
+
+                <p>
+                    All mess students are requested to pay
+                    their monthly mess fees before the due date.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTICE 3 -->
+
+        <div class="notice-card">
+
+            <div class="notice-icon">
+                ⭐
+            </div>
+
+            <div class="notice-content">
+
+                <h2>Sunday Special Lunch</h2>
+
+                <p class="notice-date">
+                    📅 23 August 2026
+                </p>
+
+                <p>
+                    Special Veg Biryani, Dal Tadka, Chapati
+                    and Raita will be served for Sunday lunch.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTICE 4 -->
+
+        <div class="notice-card">
+
+            <div class="notice-icon">
+                📢
+            </div>
+
+            <div class="notice-content">
+
+                <h2>Attendance Reminder</h2>
+
+                <p class="notice-date">
+                    📅 22 August 2026
+                </p>
+
+                <p>
+                    Students are requested to mark their
+                    meal attendance before taking lunch.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTICE 5 -->
+
+        <div class="notice-card">
+
+            <div class="notice-icon">
+                🍽️
+            </div>
+
+            <div class="notice-content">
+
+                <h2>Food Feedback</h2>
+
+                <p class="notice-date">
+                    📅 22 August 2026
+                </p>
+
+                <p>
+                    Students can submit their feedback about
+                    food quality and mess service.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        © 2026 Smart Hostel Mess Management System | All Rights Reserved
+
+    </footer>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT: DYNAMIC SQLITE NOTICES ================= -->
+<script>
+async function loadNoticesFromDB() {
+    const container = document.getElementById("noticeContainer");
+    if (!container) return;
+
+    try {
+        const response = await fetch('/api/notices');
+        const data = await response.json();
+
+        if (data.success && data.notices && data.notices.length > 0) {
+            container.innerHTML = "";
+            data.notices.forEach(notice => {
+                const card = document.createElement("div");
+                card.className = "notice-card";
+                card.innerHTML = `
+                    <div class="notice-icon">${notice.icon || '📢'}</div>
+                    <div class="notice-content">
+                        <h2>${notice.title}</h2>
+                        <p class="notice-date">📅 ${notice.date}</p>
+                        <p>${notice.content}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    } catch(err) {
+        console.log("Using cached/default notices:", err);
+    }
+}
+
+window.addEventListener("DOMContentLoaded", loadNoticesFromDB);
+</script>
+
+
+<script>
+// Show logged in user name and handle logout
+window.addEventListener('DOMContentLoaded', () => {
+    const userStr = localStorage.getItem('smartHostelUser');
+    if (userStr) {
+        try {
+            const user = JSON.parse(userStr);
+            const logoutBtn = document.querySelector('.logout-btn');
+            if (logoutBtn && user.name) {
+                const userBadge = document.createElement('span');
+                userBadge.style.cssText = 'font-weight:600; color:#087f5b; margin-right:12px; font-size:14px;';
+                userBadge.textContent = `👤 ${user.name} (${user.room || ''})`;
+                logoutBtn.parentNode.insertBefore(userBadge, logoutBtn);
+            }
+        } catch(e) {}
+    }
+
+    const logoutLinks = document.querySelectorAll('.logout-btn');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+            } catch(err) {}
+            localStorage.removeItem('smartHostelUser');
+            window.location.href = 'login.html';
+        });
+    });
+});
+</script>
+
+</body>
+
+</html>

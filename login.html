@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Hostel Mess Management System - Login</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+        🏠 Smart Hostel Mess Management System
+    </div>
+
+    <nav>
+
+        <a href="#" onclick="showLogin(); return false;">
+            Home
+        </a>
+
+        <a href="#about">
+            About
+        </a>
+
+        <a href="#features">
+            Features
+        </a>
+
+        <a href="#" onclick="showRegister(); return false;">
+            Register
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="login-page">
+
+    <div class="login-table">
+
+
+        <!-- ================= LEFT SIDE ================= -->
+
+        <div class="welcome-column">
+
+            <div class="home-icon">
+                🏠
+            </div>
+
+            <h1>
+                Welcome Back!
+            </h1>
+
+            <p>
+                Login to access your Smart Hostel Mess Management System dashboard.
+            </p>
+
+            <div class="features-list">
+
+                <p>✓ Check weekly mess menu</p>
+
+                <p>✓ Manage meal attendance</p>
+
+                <p>✓ View mess fees</p>
+
+                <p>✓ Submit leave requests</p>
+
+                <p>✓ Send food feedback</p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RIGHT SIDE ================= -->
+
+        <div class="login-column">
+
+
+            <!-- ================= LOGIN ================= -->
+
+            <div id="loginSection">
+
+                <h2>
+                    Mess Management Login
+                </h2>
+
+                <p class="subtitle">
+                    Enter your details to continue
+                </p>
+
+
+                <form id="loginForm">
+
+
+                    <!-- EMAIL -->
+
+                    <label for="loginEmail">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+
+                    <!-- PASSWORD -->
+
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+
+                    <!-- OPTIONS -->
+
+                    <div class="options">
+
+                        <label class="remember">
+
+                            <input
+                                type="checkbox"
+                                id="remember"
+                            >
+
+                            Remember Me
+
+                        </label>
+
+                        <a href="#">
+                            Forgot Password?
+                        </a>
+
+                    </div>
+
+
+                    <!-- LOGIN BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="login-btn">
+
+                        Login
+
+                    </button>
+
+
+                    <!-- LOGIN MESSAGE -->
+
+                    <div
+                        id="loginMessage"
+                        class="message">
+                    </div>
+
+                </form>
+
+
+                <!-- REGISTER LINK -->
+
+                <div class="register">
+
+                    New User?
+
+                    <a
+                        href="#"
+                        onclick="showRegister(); return false;">
+
+                        Register Now
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= REGISTRATION ================= -->
+
+            <div
+                id="registerSection"
+                class="hidden">
+
+                <h2>
+                    Student Registration
+                </h2>
+
+                <p class="subtitle">
+                    Create your Smart Hostel Mess account
+                </p>
+
+
+                <form id="registerForm">
+
+
+                    <!-- STUDENT NAME -->
+
+                    <label for="studentName">
+                        Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+
+                    <!-- EMAIL -->
+
+                    <label for="registerEmail">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+
+                    <!-- MOBILE -->
+
+                    <label for="mobile">
+                        Mobile Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="mobile"
+                        placeholder="Enter 10-digit mobile number"
+                        maxlength="10"
+                        pattern="[0-9]{10}"
+                        required
+                    >
+
+
+                    <!-- ROOM -->
+
+                    <label for="room">
+                        Hostel / Room Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="room"
+                        placeholder="Example: A-101"
+                        required
+                    >
+
+
+                    <!-- PASSWORD -->
+
+                    <label for="registerPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        placeholder="Create password"
+                        minlength="6"
+                        required
+                    >
+
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <label for="confirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Confirm password"
+                        minlength="6"
+                        required
+                    >
+
+
+                    <!-- CREATE ACCOUNT -->
+
+                    <button
+                        type="submit"
+                        class="login-btn">
+
+                        Create Account
+
+                    </button>
+
+
+                    <!-- REGISTER MESSAGE -->
+
+                    <div
+                        id="registerMessage"
+                        class="message">
+                    </div>
+
+                </form>
+
+
+                <!-- LOGIN LINK -->
+
+                <div class="register">
+
+                    Already have an account?
+
+                    <a
+                        href="#"
+                        onclick="showLogin(); return false;">
+
+                        Login Here
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+/* =========================================
+   SHOW LOGIN / SHOW REGISTER
+========================================= */
+function showLogin() {
+    document.getElementById("loginSection").classList.remove("hidden");
+    document.getElementById("registerSection").classList.add("hidden");
+}
+
+function showRegister() {
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("registerSection").classList.remove("hidden");
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+    const saved = localStorage.getItem("smartHostelUser");
+    if (saved) {
+        try {
+            const u = JSON.parse(saved);
+            if (u.email && document.getElementById("loginEmail")) {
+                document.getElementById("loginEmail").value = u.email;
+            }
+        } catch(e) {}
+    }
+});
+
+/* =========================================
+   REGISTRATION (CONNECTS TO SQLITE BACKEND)
+========================================= */
+document.getElementById("registerForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("studentName").value.trim();
+    const email = document.getElementById("registerEmail").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const room = document.getElementById("room").value.trim();
+    const password = document.getElementById("registerPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const message = document.getElementById("registerMessage");
+
+    if (password !== confirmPassword) {
+        message.style.color = "red";
+        message.innerHTML = "❌ Passwords do not match.";
+        return;
+    }
+
+    if (!/^[0-9]{10}$/.test(mobile)) {
+        message.style.color = "red";
+        message.innerHTML = "❌ Enter valid 10-digit mobile number.";
+        return;
+    }
+
+    message.style.color = "#2563eb";
+    message.innerHTML = "⏳ Saving account into SQLite database...";
+
+    try {
+        const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, mobile, room, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            localStorage.setItem("smartHostelUser", JSON.stringify(data.user));
+            message.style.color = "#087f5b";
+            message.innerHTML = "✅ " + data.message;
+            document.getElementById("registerForm").reset();
+
+            setTimeout(function() {
+                showLogin();
+                document.getElementById("loginEmail").value = email;
+                document.getElementById("loginMessage").style.color = "#087f5b";
+                document.getElementById("loginMessage").innerHTML = "Registered in SQLite successfully! Please log in.";
+            }, 1000);
+        } else {
+            message.style.color = "red";
+            message.innerHTML = "❌ " + (data.message || "Registration failed.");
+        }
+    } catch (err) {
+        message.style.color = "red";
+        message.innerHTML = "❌ Backend connection error. Ensure Flask server is running.";
+    }
+});
+
+/* =========================================
+   LOGIN (CONNECTS TO SQLITE BACKEND)
+========================================= */
+document.getElementById("loginForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const message = document.getElementById("loginMessage");
+
+    message.style.color = "#2563eb";
+    message.innerHTML = "⏳ Verifying with SQLite database...";
+
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            localStorage.setItem("smartHostelUser", JSON.stringify(data.user));
+            message.style.color = "#087f5b";
+            message.innerHTML = "✅ " + data.message;
+
+            setTimeout(function() {
+                window.location.href = "mess-menu.html";
+            }, 800);
+        } else {
+            message.style.color = "red";
+            message.innerHTML = "❌ " + (data.message || "Invalid email or password.");
+        }
+    } catch (err) {
+        message.style.color = "red";
+        message.innerHTML = "❌ Backend connection error. Ensure Flask server is running.";
+    }
+});
+</script>
+
+
+</body>
+
+</html>

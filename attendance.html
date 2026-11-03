@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Hostel Mess Management System - Attendance</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+    <div class="logo">
+        🏠 Smart Hostel Mess Management System
+    </div>
+    <div class="nav-buttons">
+        <a href="mess-menu.html" class="nav-btn">🍛 Mess Menu</a>
+        <a href="attendance.html" class="nav-btn active">🍽️ Attendance</a>
+        <a href="mess-fees.html" class="nav-btn">💰 Mess Fees</a>
+        <a href="notice.html" class="nav-btn">📢 Notices</a>
+        <a href="login.html" class="logout-btn">Logout</a>
+    </div>
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="attendance-page">
+
+
+    <!-- ================= HEADING ================= -->
+
+    <div class="attendance-heading">
+
+        <div class="heading-icon">
+            🍽️
+        </div>
+
+        <h1>Meal Attendance</h1>
+
+        <p>
+            Mark your attendance for today's lunch.
+        </p>
+
+    </div>
+
+
+    <!-- ================= ATTENDANCE CARD ================= -->
+
+    <div class="attendance-card">
+
+        <h2>Today's Lunch</h2>
+
+        <p class="date" id="todayDate">
+        </p>
+
+
+        <!-- ================= MEAL DETAILS ================= -->
+
+        <div class="meal-box">
+
+            <h3>🍛 Lunch</h3>
+
+            <p>
+                Rice • Dal • Chapati • Vegetable • Salad
+            </p>
+
+        </div>
+
+
+        <!-- ================= ATTENDANCE BUTTONS ================= -->
+
+        <div class="attendance-options">
+
+            <button
+                class="present-btn"
+                onclick="markAttendance('Present')">
+
+                ✓ I Will Take Lunch
+
+            </button>
+
+
+            <button
+                class="absent-btn"
+                onclick="markAttendance('Absent')">
+
+                ✕ I Will Not Take Lunch
+
+            </button>
+
+        </div>
+
+
+        <!-- ================= MESSAGE ================= -->
+
+        <div
+            id="attendanceMessage"
+            class="attendance-message">
+        </div>
+
+
+        <!-- ================= CONTINUE TO FEES ================= -->
+
+        <div id="continueSection"
+             style="display:none; margin-top:20px;">
+
+            <a
+                href="mess-fees.html"
+                class="continue-btn">
+
+                Continue to Mess Fees →
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        © 2026 Smart Hostel Mess Management System | All Rights Reserved
+
+    </footer>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+/* ================= TODAY'S DATE ================= */
+const today = new Date();
+const options = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+};
+const formattedDateStr = today.toISOString().split('T')[0];
+document.getElementById("todayDate").innerHTML = today.toLocaleDateString("en-IN", options);
+
+function getCurrentUser() {
+    const saved = localStorage.getItem("smartHostelUser");
+    if (saved) {
+        try { return JSON.parse(saved); } catch(e) {}
+    }
+    return null;
+}
+
+/* ================= CHECK TODAY'S ATTENDANCE FROM SQLITE ================= */
+async function loadTodayAttendance() {
+    const user = getCurrentUser();
+    const emailParam = user ? `?email=${encodeURIComponent(user.email)}` : '';
+    
+    try {
+        const response = await fetch(`/api/attendance/today${emailParam}`);
+        const data = await response.json();
+        
+        if (data.success && data.attendance) {
+            const status = data.attendance.status;
+            const message = document.getElementById("attendanceMessage");
+            const continueSection = document.getElementById("continueSection");
+            
+            if (status === "Present") {
+                message.style.color = "#087f5b";
+                message.innerHTML = `✅ Saved in SQLite: You marked <strong>Present</strong> for lunch today.`;
+                continueSection.style.display = "block";
+            } else {
+                message.style.color = "#dc2626";
+                message.innerHTML = `❌ Saved in SQLite: You marked <strong>Absent</strong> for lunch today.`;
+                continueSection.style.display = "none";
+            }
+        }
+    } catch(err) {
+        console.log("Could not fetch today's attendance:", err);
+    }
+}
+
+window.addEventListener("DOMContentLoaded", loadTodayAttendance);
+
+/* ================= MARK ATTENDANCE IN SQLITE ================= */
+async function markAttendance(status) {
+    const message = document.getElementById("attendanceMessage");
+    const continueSection = document.getElementById("continueSection");
+    const user = getCurrentUser();
+
+    message.style.color = "#2563eb";
+    message.innerHTML = "⏳ Saving attendance in SQLite database...";
+
+    try {
+        const response = await fetch('/api/attendance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                status: status,
+                meal: "Lunch",
+                date: formattedDateStr,
+                email: user ? user.email : ''
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            if (status === "Present") {
+                message.style.color = "#087f5b";
+                message.innerHTML = "✅ SQLite Saved: Lunch attendance marked as Present!";
+                continueSection.style.display = "block";
+            } else {
+                message.style.color = "#dc2626";
+                message.innerHTML = "❌ SQLite Saved: Lunch attendance marked as Absent.";
+                continueSection.style.display = "none";
+            }
+        } else {
+            message.style.color = "red";
+            message.innerHTML = "❌ " + (data.message || "Failed to mark attendance.");
+        }
+    } catch (err) {
+        message.style.color = "red";
+        message.innerHTML = "❌ Error connecting to database server.";
+    }
+}
+</script>
+
+
+
+<script>
+// Show logged in user name and handle logout
+window.addEventListener('DOMContentLoaded', () => {
+    const userStr = localStorage.getItem('smartHostelUser');
+    if (userStr) {
+        try {
+            const user = JSON.parse(userStr);
+            const logoutBtn = document.querySelector('.logout-btn');
+            if (logoutBtn && user.name) {
+                const userBadge = document.createElement('span');
+                userBadge.style.cssText = 'font-weight:600; color:#087f5b; margin-right:12px; font-size:14px;';
+                userBadge.textContent = `👤 ${user.name} (${user.room || ''})`;
+                logoutBtn.parentNode.insertBefore(userBadge, logoutBtn);
+            }
+        } catch(e) {}
+    }
+
+    const logoutLinks = document.querySelectorAll('.logout-btn');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+            } catch(err) {}
+            localStorage.removeItem('smartHostelUser');
+            window.location.href = 'login.html';
+        });
+    });
+});
+</script>
+
+</body>
+
+</html>

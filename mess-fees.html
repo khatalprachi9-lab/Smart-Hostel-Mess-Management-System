@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Hostel Mess Management System - Fees</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+    <div class="logo">
+        🏠 Smart Hostel Mess Management System
+    </div>
+    <div class="nav-buttons">
+        <a href="mess-menu.html" class="nav-btn">🍛 Mess Menu</a>
+        <a href="attendance.html" class="nav-btn">🍽️ Attendance</a>
+        <a href="mess-fees.html" class="nav-btn active">💰 Mess Fees</a>
+        <a href="notice.html" class="nav-btn">📢 Notices</a>
+        <a href="login.html" class="logout-btn">Logout</a>
+    </div>
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="fees-page">
+
+    <div class="fees-heading">
+
+        <div class="heading-icon">
+            💰
+        </div>
+
+        <h1>Mess Fees</h1>
+
+        <p>
+            View your hostel mess fee details.
+        </p>
+
+    </div>
+
+
+    <!-- ================= FEES CARD ================= -->
+
+    <div class="fees-card">
+
+        <h2>Current Month</h2>
+
+        <p class="month" id="feeMonth">August 2026</p>
+
+
+        <div class="fee-row">
+
+            <span>Monthly Mess Fee</span>
+
+            <strong id="monthlyFee">₹3000</strong>
+
+        </div>
+
+
+        <div class="fee-row">
+
+            <span>Paid Amount</span>
+
+            <strong id="paidAmount">₹2000</strong>
+
+        </div>
+
+
+        <div class="fee-row remaining">
+
+            <span>Remaining Amount</span>
+
+            <strong id="remainingAmount">₹1000</strong>
+
+        </div>
+
+
+        <div class="payment-status" id="paymentStatus">⚠️ Payment Pending</div>
+
+
+        <button class="pay-btn"
+                onclick="makePayment()">
+
+            💳 Pay Mess Fees
+
+        </button>
+
+
+        <div id="paymentMessage"
+             class="payment-message">
+        </div>
+
+
+        <!-- ================= NOTICE BUTTON ================= -->
+
+        <a href="notice.html" class="notice-btn">
+
+            📢 View Mess Notices
+
+        </a>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        © 2026 Smart Hostel Mess Management System | All Rights Reserved
+
+    </footer>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+function getCurrentUser() {
+    const saved = localStorage.getItem("smartHostelUser");
+    if (saved) {
+        try { return JSON.parse(saved); } catch(e) {}
+    }
+    return null;
+}
+
+/* ================= LOAD FEES FROM SQLITE ================= */
+async function loadFees() {
+    const user = getCurrentUser();
+    const emailParam = user ? `?email=${encodeURIComponent(user.email)}` : '';
+
+    try {
+        const response = await fetch(`/api/fees${emailParam}`);
+        const data = await response.json();
+
+        if (data.success && data.fee) {
+            const fee = data.fee;
+            if (document.getElementById("feeMonth")) document.getElementById("feeMonth").textContent = fee.month;
+            if (document.getElementById("monthlyFee")) document.getElementById("monthlyFee").textContent = "₹" + fee.monthly_fee;
+            if (document.getElementById("paidAmount")) document.getElementById("paidAmount").textContent = "₹" + fee.paid_amount;
+            if (document.getElementById("remainingAmount")) document.getElementById("remainingAmount").textContent = "₹" + fee.remaining_amount;
+
+            const statusEl = document.getElementById("paymentStatus");
+            if (statusEl) {
+                if (fee.status === "Paid" || fee.remaining_amount <= 0) {
+                    statusEl.textContent = "✅ Payment Completed";
+                    statusEl.style.background = "#e6fcf5";
+                    statusEl.style.color = "#087f5b";
+                    const payBtn = document.querySelector(".pay-btn");
+                    if (payBtn) {
+                        payBtn.textContent = "✓ Fees Fully Paid";
+                        payBtn.disabled = true;
+                        payBtn.style.opacity = "0.7";
+                        payBtn.style.cursor = "default";
+                    }
+                } else {
+                    statusEl.textContent = "⚠️ Payment Pending";
+                    statusEl.style.background = "#fff9db";
+                    statusEl.style.color = "#f08c00";
+                }
+            }
+        }
+    } catch(err) {
+        console.log("Could not load fees from backend:", err);
+    }
+}
+
+window.addEventListener("DOMContentLoaded", loadFees);
+
+/* ================= PROCESS PAYMENT IN SQLITE ================= */
+async function makePayment() {
+    const message = document.getElementById("paymentMessage");
+    const user = getCurrentUser();
+
+    message.style.color = "#2563eb";
+    message.innerHTML = "⏳ Processing fee payment in SQLite database...";
+
+    try {
+        const response = await fetch('/api/fees/pay', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: user ? user.email : '' })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            message.style.color = "#087f5b";
+            message.innerHTML = `✅ ${data.message}`;
+
+            // Refresh UI with updated fees
+            await loadFees();
+        } else {
+            message.style.color = "red";
+            message.innerHTML = "❌ " + (data.message || "Payment could not be processed.");
+        }
+    } catch(err) {
+        message.style.color = "red";
+        message.innerHTML = "❌ Error connecting to database server.";
+    }
+}
+</script>
+
+
+<script>
+// Show logged in user name and handle logout
+window.addEventListener('DOMContentLoaded', () => {
+    const userStr = localStorage.getItem('smartHostelUser');
+    if (userStr) {
+        try {
+            const user = JSON.parse(userStr);
+            const logoutBtn = document.querySelector('.logout-btn');
+            if (logoutBtn && user.name) {
+                const userBadge = document.createElement('span');
+                userBadge.style.cssText = 'font-weight:600; color:#087f5b; margin-right:12px; font-size:14px;';
+                userBadge.textContent = `👤 ${user.name} (${user.room || ''})`;
+                logoutBtn.parentNode.insertBefore(userBadge, logoutBtn);
+            }
+        } catch(e) {}
+    }
+
+    const logoutLinks = document.querySelectorAll('.logout-btn');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+            } catch(err) {}
+            localStorage.removeItem('smartHostelUser');
+            window.location.href = 'login.html';
+        });
+    });
+});
+</script>
+
+</body>
+
+</html>
